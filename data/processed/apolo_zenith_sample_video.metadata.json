@@ -1,0 +1,12 @@
+{
+  "native_width": 64,
+  "native_height": 64,
+  "upscaled_width": 128,
+  "upscaled_height": 128,
+  "final_width": 128,
+  "final_height": 128,
+  "quality": "preview",
+  "aspect_ratio": "requested:16:9;actual:1:1",
+  "sr_stages": 1,
+  "note": "native_* = resolu\u00e7\u00e3o da gera\u00e7\u00e3o latente; upscaled_* = sa\u00edda da super-resolu\u00e7\u00e3o generativa; final_* = resolu\u00e7\u00e3o entregue."
+}

@@ -22,11 +22,14 @@ O sistema é construído com código unificado e totalmente modular em PyTorch, 
    - Sistema de agentes especializados (Arquiteto, Desenvolvedor Sênior, Revisor, Debugger, Engenheiro de Segurança).
    - Execução em Sandbox isolado e verificação rigorosa (Build, Lint, Test, Runtime).
    - Conhecimento e adaptadores para mais de 2.500 linguagens de programação.
-4. **Geração Cinemática de Vídeo & Imagem**:
-   - Flow Matching / Diffusion Transformers com latentes espaço-temporais.
-   - Controlador de Câmera Cinemática (Dolly, Pan, Tilt, Zoom, Orbit, Crane).
-   - Motor de Consistência de Identidade (Zenith Identity & Consistency Engine).
-   - Áudio sincronizado com a linha temporal do vídeo.
+4. **Geração Generativa de Vídeo & Imagem** (corrigida — ver `docs/BUGFIX_MEDIA_ENGINES.md`):
+   - VideoDiT espaço-temporal (self-attn + cross-frame temporal attn + cross-attn + AdaLN-Zero) sobre latentes `[B, C, T, H, W]` do VideoVAE 3D.
+   - Image Engine v2: text-to-image, image-to-image, inpainting, outpainting, edição e reference conditioning via Flow Matching DiT com AdaLN-Zero.
+   - Cinematic Camera Engine com trajetórias por frame (tracking, dolly, truck, pan, tilt, orbit, crane, handheld, steadicam, drone, rack focus…).
+   - Motion Engine + Physics-Aware Module (gravidade/inércia/colisão) como priors diferenciáveis de movimento.
+   - Identity Bank + Scene Memory (Zenith Character/Object Consistency + Video Continuation Engine para extensão).
+   - Super-Resolução **generativa** (×2 encadeável, tiling com blending) e pipeline hierárquico até 8K com metadados `native/upscaled/final` (sem upscale falso).
+   - ⚠️ Scripts antigos que desenhavam vídeo com sprites PIL foram deprecados (`scripts/generate_story_video.py` é apenas o baseline BEFORE).
 5. **Memória Hierárquica e Ferramentas**:
    - Roteador de ferramentas seguro para Shell, Python Sandbox, Git, Arquivos e HTTP.
    - Memória de trabalho, projeto, conversação e grafo de código.

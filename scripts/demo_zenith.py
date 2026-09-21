@@ -77,12 +77,12 @@ def main():
     print(f"      Amostragem Euler ODE concluída -> Tensor RGB: {list(img.shape)}")
     
     # 6. Motor de Vídeo (Storyboard & Câmera)
-    vid_engine = ZenithVideoEngine(embed_dim=cfg.model.d_model, temporal_frames=4, spatial_tokens=16)
-    vid_res = vid_engine.generate_video_latents(prompt, cond.squeeze(1))
+    vid_engine = ZenithVideoEngine(embed_dim=cfg.model.d_model, temporal_frames=2,
+                                   latent_size=8, dit_layers=2, dit_heads=4)
+    vid_res = vid_engine.text_to_video(prompt, cond, cond.squeeze(1), num_steps=2)
     print(f"\n[6/8] Zenith Video Engine:")
-    print(f"      Modo de Câmera Identificado: {vid_res['camera_params']['mode']}")
-    print(f"      Timeline Cinemática: {len(vid_res['timeline'].shots)} tomadas planejadas")
-    print(f"      Latentes de Vídeo Estáveis: {vid_res['video_tensor_shape']}")
+    print(f"      Timeline Cinemática: {len(vid_res.timeline.shots)} tomadas planejadas")
+    print(f"      Vídeo RGB Gerado (latente espaço-temporal): {list(vid_res.video.shape)}")
     
     # 7. Motor de Áudio
     audio_engine = ZenithAudioEngine(d_model=cfg.model.d_model)

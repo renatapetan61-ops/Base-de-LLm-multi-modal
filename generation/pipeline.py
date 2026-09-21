@@ -59,6 +59,13 @@ class ZenithMultimodalPipeline(nn.Module):
     def _encode_prompt(self, prompts: List[str]):
         return self.prompt_encoder(prompts)  # (tokens (B,L,D), pooled (B,1,D))
 
+    @staticmethod
+    def _ratio(w: int, h: int) -> str:
+        """Aspect ratio real medido no tensor de saída (nunca reporta algo não gerado)."""
+        import math
+        g = math.gcd(w, h)
+        return f"{w // g}:{h // g}"
+
     def _sr_video(self, video: torch.Tensor, stages: int) -> torch.Tensor:
         """SR generativa em cada frame, com tiling por memória."""
         B, C, T, H, W = video.shape
@@ -87,7 +94,8 @@ class ZenithMultimodalPipeline(nn.Module):
             native_width=native[0], native_height=native[1],
             upscaled_width=img.shape[3], upscaled_height=img.shape[2],
             final_width=img.shape[3], final_height=img.shape[2],
-            quality=quality, aspect_ratio=aspect_ratio,
+            quality=quality,
+            aspect_ratio=f"requested:{aspect_ratio};actual:{self._ratio(img.shape[3], img.shape[2])}",
             sr_stages=plan["preset"].sr_stages,
         )
         return {"image": img, "metadata": meta.to_dict(), "mode": "text_to_image"}
@@ -126,7 +134,8 @@ class ZenithMultimodalPipeline(nn.Module):
             native_width=result.native_width, native_height=result.native_height,
             upscaled_width=video.shape[4], upscaled_height=video.shape[3],
             final_width=video.shape[4], final_height=video.shape[3],
-            quality=quality, aspect_ratio=aspect_ratio, sr_stages=stages,
+            quality=quality, sr_stages=stages,
+            aspect_ratio=f"requested:{aspect_ratio};actual:{self._ratio(video.shape[4], video.shape[3])}",
         )
         out = result.to_dict()
         out["metadata"] = {**result.metadata, "resolution": meta.to_dict()}
